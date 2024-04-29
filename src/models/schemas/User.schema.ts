@@ -6,6 +6,7 @@ export interface IAccount {
   password: string;
   score?: number;
   created?: Date;
+  salt: string;
 }
 
 export class User {
@@ -14,6 +15,7 @@ export class User {
   private password: string;
   private score?: number;
   private created: Date;
+  private salt: string;
 
   constructor(user: IAccount) {
     const date = new Date();
@@ -22,6 +24,7 @@ export class User {
     this.password = user.password;
     this.score = user.score;
     this.created = user.created || date;
+    this.salt = user.salt;
   }
 
   get account() {
@@ -52,6 +55,14 @@ export class User {
 
   get date() {
     return this.created;
+  }
+
+  get saltValue() {
+    return this.salt;
+  }
+
+  set saltValue(value: string) {
+    this.salt = value;
   }
 
   toJSON() {

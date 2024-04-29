@@ -47,6 +47,18 @@ class DatabaseServices {
     }
   }
 
+  async findUserByUsername(username: string) {
+    try {
+      const accountDocument = (await this.db.collection(dbCollection).findOne({ username })) as IAccount;
+      if (accountDocument) {
+        return new User(accountDocument);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    return null;
+  }
+
   async login(account: IAccount) {
     try {
       const { username, password } = account;
@@ -62,7 +74,7 @@ class DatabaseServices {
 
   async register(account: IAccount) {
     try {
-      const { username, password } = account;
+      const { username, password, salt } = account;
 
       // Check if the account already exists
       const existingAccount = await this.db.collection(dbCollection).findOne({ username });
@@ -71,7 +83,7 @@ class DatabaseServices {
       }
 
       // If the account does not exist, insert it into the database
-      const insertResult = await this.db.collection(dbCollection).insertOne({ username, password });
+      const insertResult = await this.db.collection(dbCollection).insertOne({ username, password, salt });
 
       // Retrieve the inserted document using the insertedId
       const accountDocument = await this.db.collection(dbCollection).findOne({ _id: insertResult.insertedId });
