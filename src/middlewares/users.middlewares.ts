@@ -1,47 +1,48 @@
 import { NextFunction, Request, Response } from 'express';
 import HTTP_STATUS from '~/constants/httpStatus';
-import { USERS_MESSAGE } from '~/constants/messages';
+import { REQUEST_MESSAGE, USERS_MESSAGE } from '~/constants/messages';
 import { isMatchPasswordAndConfirmPassword } from '~/controllers/users.controllers';
+import { LoginReqBody, RegisterReqBody } from '~/models/requests/User.requests';
 
 import { REGEX_PASSWORD, REGEX_USERNAME } from '~/utils/regex';
 export const loginValidator = (req: Request, res: Response, next: NextFunction) => {
-  if (!req.body) {
+  const { username, password } = req.body as LoginReqBody;
+  if (!username || !password) {
     return res.status(HTTP_STATUS.BAD_REQUEST).send({
-      message: USERS_MESSAGE.INVALID_USERNAME_OR_PASSWORD
+      message: REQUEST_MESSAGE.INVALID_ATTRIBUTE,
     });
   }
   next();
 };
 
 export const registerValidator = (req: Request, res: Response, next: NextFunction) => {
-  if (!req.body) {
+  const { username, password, confirmPassword } = req.body as RegisterReqBody;
+  if (!username || !password || !confirmPassword) {
     return res.status(HTTP_STATUS.BAD_REQUEST).send({
-      message: USERS_MESSAGE.INVALID_USERNAME_OR_PASSWORD
+      message: REQUEST_MESSAGE.INVALID_ATTRIBUTE,
     });
   }
-  if (req.body) {
-    //validate password and confirmPassword
-    const { username, password, confirmPassword } = req.body;
-    if (!isMatchPasswordAndConfirmPassword(password, confirmPassword)) {
-      return res.status(HTTP_STATUS.BAD_REQUEST).send({
-        message: USERS_MESSAGE.PASSWORD_AND_CONFIRM_PASSWORD_NOT_MATCH
-      });
-    }
+  next();
 
-    //validate register account
-    if (!REGEX_USERNAME.test(username)) {
-      return res.status(HTTP_STATUS.BAD_REQUEST).send({
-        message: USERS_MESSAGE.USERNAME_RULE
-      });
-    }
-
-    if (!REGEX_PASSWORD.test(password)) {
-      return res.status(HTTP_STATUS.BAD_REQUEST).send({
-        message: USERS_MESSAGE.PASSWORD_RULE
-      });
-    }
+  if (!isMatchPasswordAndConfirmPassword(password, confirmPassword)) {
+    return res.status(HTTP_STATUS.BAD_REQUEST).send({
+      message: USERS_MESSAGE.PASSWORD_AND_CONFIRM_PASSWORD_NOT_MATCH,
+    });
   }
 
-  //if success
+  // validate register account
+  if (!REGEX_USERNAME.test(username)) {
+    return res.status(HTTP_STATUS.BAD_REQUEST).send({
+      message: USERS_MESSAGE.USERNAME_RULE,
+    });
+  }
+
+  if (!REGEX_PASSWORD.test(password)) {
+    return res.status(HTTP_STATUS.BAD_REQUEST).send({
+      message: USERS_MESSAGE.PASSWORD_RULE,
+    });
+  }
+
+  // if success
   next();
 };

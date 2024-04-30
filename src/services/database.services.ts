@@ -1,7 +1,8 @@
-import dotenv from 'dotenv';
-import { Db, MongoClient } from 'mongodb';
+import { config } from 'dotenv';
+import { Db, Document, InsertOneResult, MongoClient, WithId } from 'mongodb';
 import { IAccount, User } from '~/models/schemas/User.schema';
-dotenv.config({ path: __dirname + '/../../.env' });
+
+config({ path: __dirname + '/../../.env' });
 
 const uri = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@snake-game.t2nmru9.mongodb.net/?retryWrites=true&w=majority&appName=Snake-Game`;
 
@@ -15,17 +16,19 @@ class DatabaseServices {
     this.db = this.client.db(process.env.DB_NAME);
   }
 
-  async connect() {
+  async connect(): Promise<void> {
     try {
       await this.db.command({ ping: 1 });
-      console.log('Pinged your deployment. You successfully connected to MongoDB!');
     } catch (error) {
       console.log(error);
       throw error;
     }
   }
 
-  async createAccount(username: string, password: string) {
+  async createAccount(
+    username: string,
+    password: string,
+  ): Promise<InsertOneResult<Document> | undefined> {
     try {
       const account = await this.db.collection(dbCollection).insertOne({ username, password });
       return account;
@@ -34,9 +37,11 @@ class DatabaseServices {
     }
   }
 
-  async getAccount(username: string) {
+  async getAccount(username: string): Promise<User | null | undefined> {
     try {
-      const accountDocument = (await this.db.collection(dbCollection).findOne({ username })) as IAccount;
+      const accountDocument = (await this.db
+        .collection(dbCollection)
+        .findOne({ username })) as IAccount;
       if (accountDocument) {
         const account = new User(accountDocument);
         return account;
@@ -47,9 +52,11 @@ class DatabaseServices {
     }
   }
 
-  async findUserByUsername(username: string) {
+  async findUserByUsername(username: string): Promise<User | null> {
     try {
-      const accountDocument = (await this.db.collection(dbCollection).findOne({ username })) as IAccount;
+      const accountDocument = (await this.db
+        .collection(dbCollection)
+        .findOne({ username })) as IAccount;
       if (accountDocument) {
         return new User(accountDocument);
       }
@@ -59,10 +66,12 @@ class DatabaseServices {
     return null;
   }
 
-  async login(account: IAccount) {
+  async login(account: IAccount): Promise<boolean> {
     try {
       const { username, password } = account;
-      const accountDocument = (await this.db.collection(dbCollection).findOne({ username, password })) as IAccount;
+      const accountDocument = (await this.db
+        .collection(dbCollection)
+        .findOne({ username, password })) as IAccount;
       if (accountDocument) {
         return true;
       }
@@ -72,7 +81,7 @@ class DatabaseServices {
     return false;
   }
 
-  async register(account: IAccount) {
+  async register(account: IAccount): Promise<User | undefined> {
     try {
       const { username, password, salt } = account;
 
@@ -83,10 +92,14 @@ class DatabaseServices {
       }
 
       // If the account does not exist, insert it into the database
-      const insertResult = await this.db.collection(dbCollection).insertOne({ username, password, salt });
+      const insertResult = await this.db
+        .collection(dbCollection)
+        .insertOne({ username, password, salt });
 
       // Retrieve the inserted document using the insertedId
-      const accountDocument = await this.db.collection(dbCollection).findOne({ _id: insertResult.insertedId });
+      const accountDocument = await this.db
+        .collection(dbCollection)
+        .findOne({ _id: insertResult.insertedId });
 
       if (accountDocument) {
         return new User(accountDocument as IAccount);
@@ -97,7 +110,7 @@ class DatabaseServices {
     }
   }
 
-  async getAllAccounts() {
+  async getAllAccounts(): Promise<WithId<Document>[] | undefined> {
     try {
       return this.db.collection(dbCollection).find().toArray();
     } catch (error) {
