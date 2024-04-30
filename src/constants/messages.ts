@@ -11,10 +11,15 @@ export const USERS_MESSAGE = {
   USERNAME_RULE: 'Username must from 1 to 20 character and do not contain special character',
   PASSWORD_RULE:
     'Password must from 8 to 20 character and contain at least 1 lowercase, 1 uppercase, 1 number and 1 special character',
-  ERROR: 'An error occurred',
+  USER_NOT_FOUND: 'User not found',
+  WRONG_USERNAME_OR_PASSWORD: 'Wrong username or password',
 } as const;
 
 export const DATABASE_MESSAGE = {
   CONNECT_SUCCESS: 'Pinged your deployment. You successfully connected to MongoDB!',
   CONNECT_FAILED: 'Failed to connect to the database',
+} as const;
+
+export const ERROR_MESSAGE = {
+  INTERNAL_SERVER_ERROR: 'Internal server error',
 } as const;

@@ -22,7 +22,6 @@ export const registerValidator = (req: Request, res: Response, next: NextFunctio
       message: REQUEST_MESSAGE.INVALID_ATTRIBUTE,
     });
   }
-  next();
 
   if (!isMatchPasswordAndConfirmPassword(password, confirmPassword)) {
     return res.status(HTTP_STATUS.BAD_REQUEST).send({

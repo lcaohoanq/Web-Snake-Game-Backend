@@ -8,3 +8,7 @@ export interface LoginReqBody {
   username: string;
   password: string;
 }
+
+export interface GetMeReqQuery {
+  username: string;
+}

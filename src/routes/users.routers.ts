@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import {
   accountController,
+  getMeController,
   loginController,
   registerController,
 } from '~/controllers/users.controllers';
@@ -9,6 +10,8 @@ import { loginValidator, registerValidator } from '~/middlewares/users.middlewar
 const usersRoutes = Router();
 
 usersRoutes.get('/account', accountController);
+
+usersRoutes.get('/getMe', getMeController);
 
 usersRoutes.post('/login', loginValidator, loginController);
 
