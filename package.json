@@ -5,17 +5,11 @@
   "scripts": {
     "dev": "cross-env NODE_ENV=development npx nodemon",
     "build": "rimraf ./dist && tsc && tsc-alias",
-    "lint": "yarn run eslint:check && yarn run prettier:check && yarn run check-types",
-    "start:dev": "cross-env NODE_ENV=development node dist/index.js",
-    "start:prod": "cross-env NODE_ENV=production node dist/src/index.js",
-    "prepare": "husky",
-    "prettier:check": "prettier ./src/**/*.{tsx,ts,js,jsx} --check",
-    "prettier:fix": "prettier ./src/**/*.{tsx,ts,js,jsx} --write",
-    "eslint:check": "eslint ./src --ext .ts,.tsx,.js,.jsx --max-warnings 0",
-    "eslint:fix": "eslint ./src --ext .ts,.tsx,.js,.jsx --max-warnings 0 --fix",
-    "eslint:check-allow-warning": "eslint ./src --ext .ts,.tsx,.js,.jsx",
-    "check-conflict-prettier-eslint": "npx eslint-config-prettier src/App.tsx --print-config",
-    "check-types": "tsc --noemit"
+    "start": "node dist/index.js",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "prettier": "prettier --check .",
+    "prettier:fix": "prettier --write ."
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.0.2",
