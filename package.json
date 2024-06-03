@@ -53,5 +53,9 @@
   },
   "engines": {
     "node": ">=16.0.0"
+  },
+  "bin" : {
+    "execute": "./src/exec/test.js"
   }
+
 }
