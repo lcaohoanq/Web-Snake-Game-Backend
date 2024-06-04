@@ -12,7 +12,7 @@
     "prettier:fix": "prettier --write .",
     "ts.check": "tsc --project tsconfig.json",
     "add-build": "git add dist",
-    "getData": "node ./src/exec/getAllUserData.js"
+    "getData": "npx ts-node ./src/exec/getAllUserData.ts "
   },
   "pre-commit": [
     "ts.check",
@@ -56,7 +56,6 @@
     "node": ">=16.0.0"
   },
   "bin": {
-    "execute": "./src/exec/test.js",
-    "getData": "./src/exec/getAllUserData.js"
+    "execute": "./src/exec/test.js"
   }
 }
