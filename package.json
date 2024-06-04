@@ -11,7 +11,8 @@
     "prettier": "prettier --check .",
     "prettier:fix": "prettier --write .",
     "ts.check": "tsc --project tsconfig.json",
-    "add-build": "git add dist"
+    "add-build": "git add dist",
+    "getData": "node ./src/exec/getAllUserData.js"
   },
   "pre-commit": [
     "ts.check",
@@ -54,8 +55,8 @@
   "engines": {
     "node": ">=16.0.0"
   },
-  "bin" : {
-    "execute": "./src/exec/test.js"
+  "bin": {
+    "execute": "./src/exec/test.js",
+    "getData": "./src/exec/getAllUserData.js"
   }
-
 }
